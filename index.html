@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thyroid Talk - Interactive & Advanced</title>
+  <style>
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    body {
+      background: #f9fafe;
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    a {
+      color: var(--link-color);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    a:hover,
+    a:focus {
+      text-decoration: underline;
+      outline: none;
+      
+    }
+
+    /* CSS Variables for Light and Dark */
+    :root {
+      --bg-color: #f9fafe;
+      --text-color: #333;
+      --header-bg: #5a86bf;
+      --nav-bg: #3c6690;
+      --nav-hover-bg: #2a4c6e;
+      --link-color: #0a8fcf;
+      --button-bg: #3c6690;
+      --button-hover-bg: #2a4c6e;
+      --symptom-bg: white;
+      --footer-bg: #f0f4f8;
+    }
+    .dark-mode {
+      --bg-color: #121212;
+      --text-color: #ddd;
+      --header-bg: #243b5a;
+      --nav-bg: #1b2a44;
+      --nav-hover-bg: #162339;
+      --link-color: #66aaff;
+      --button-bg: #1b2a44;
+      --button-hover-bg: #162339;
+      --symptom-bg: #222;
+      --footer-bg: #1a1a1a;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    /* Header */
+    header {
+      background: var(--header-bg);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      user-select: none;
+    }
+    header h1 {
+      font-weight: 700;
+      font-size: 2.8rem;
+      margin-bottom: 5px;
+    }
+    header p {
+      font-weight: 300;
+      font-size: 1.2rem;
+      font-style: italic;
+      letter-spacing: 1px;
+    }
+
+    /* Dark mode toggle */
+    #darkModeToggle {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      background: var(--button-bg);
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background-color 0.3s ease;
+      z-index: 1100;
+    }
+    #darkModeToggle:hover {
+      background: var(--button-hover-bg);
+    }
+
+    /* Navigation */
+    nav {
+      background: var(--nav-bg);
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      padding: 15px 0;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 72px;
+      z-index: 999;
+      user-select: none;
+    }
+    nav a {
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 8px 18px;
+      border-radius: 6px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    nav a:hover, nav a:focus {
+      background: var(--nav-hover-bg);
+      transform: scale(1.1);
+      outline: none;
+    }
+    nav a.active {
+      background: #f9a825;
+      color: #2a2a2a;
+      transform: scale(1.1);
+      box-shadow: 0 0 8px #f9a825aa;
+    }
+
+    /* Sections */
+    section {
+      padding: 60px 0;
+      border-bottom: 1px solid #ddd;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    section h2 {
+      color: var(--nav-bg);
+      margin-bottom: 25px;
+      font-weight: 700;
+      font-size: 2.2rem;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .welcome-text, .section-text {
+      max-width: 700px;
+      margin: auto;
+      font-size: 1.15rem;
+      text-align: center;
+      color: var(--text-color);
+      line-height: 1.8;
+    }
+
+    /* Infographic placeholder updated to show fact */
+    .infographic {
+      background: #dbe9f7;
+      border-radius: 12px;
+      max-width: 700px;
+      /* height: 320px; */ /* removed fixed height */
+      padding: 40px 30px;
+      margin: 40px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #3c6690;
+      font-weight: 700;
+      font-size: 1.6rem;
+      box-shadow: inset 0 0 15px #9bbbd9;
+      user-select: none;
+      /* animation: pulse 3s ease-in-out infinite; */ /* removed animation */
+    }
+
+    /* Symptoms grid */
+    .symptoms-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      max-width: 900px;
+      margin: 20px auto 0 auto;
+    }
+    .symptom {
+      background: var(--symptom-bg);
+      padding: 18px 25px;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+      color: var(--text-color);
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    .symptom:hover {
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+      transform: translateY(-5px);
+    }
+
+    /* Quiz styles */
+    .quiz {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: left;
+      background: var(--symptom-bg);
+      padding: 30px 25px;
+      border-radius: 14px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+      color: var(--text-color);
+    }
+    .quiz h3 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: var(--nav-bg);
+    }
+    .quiz-question {
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .quiz-options label {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .quiz-options input[type="radio"] {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+    #quiz-result {
+      margin-top: 20px;
+      font-weight: 700;
+      font-size: 1.15rem;
+      text-align: center;
+      min-height: 60px;
+    }
+    #quiz-submit {
+      background: var(--button-bg);
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+    #quiz-submit:hover {
+      background: var(--button-hover-bg);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 25px 15px;
+      font-size: 0.9rem;
+      color: #666;
+      background: var(--footer-bg);
+      margin-top: 60px;
+      user-select: none;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: inset 0 0 15px #9bbbd9;
+      }
+      50% {
+        box-shadow: inset 0 0 35px #8caeea;
+      }
+    }
+
+    /* Responsive */
+    @media(max-width: 600px) {
+      nav {
+        flex-direction: column;
+        gap: 12px;
+        position: sticky;
+        top: 120px;
+      }
+      .symptoms-list {
+        grid-template-columns: 1fr;
+      }
+      header h1 {
+        font-size: 2rem;
+      }
+      header p {
+        font-size: 1rem;
+      }
+      section h2 {
+        font-size: 1.8rem;
+      }
+      .quiz {
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button id="darkModeToggle" aria-label="Toggle dark mode">🌙 Dark Mode</button>
+
+  <header>
+    <h1>Thyroid Talk</h1>
+    <p>Understand. Manage. Thrive.</p>
+  </header>
+
+  <nav>
+    <a href="#welcome" tabindex="1" class="nav-link">Home</a>
+    <a href="#about" tabindex="2" class="nav-link">About Thyroid</a>
+    <a href="#symptoms" tabindex="3" class="nav-link">Symptoms</a>
+    <a href="#diagnosis" tabindex="4" class="nav-link">Diagnosis &amp; Treatment</a>
+    <a href="#myths" tabindex="5" class="nav-link">Myth Busting</a>
+    <a href="#quiz" tabindex="6" class="nav-link">Symptom Quiz</a>
+    <a href="#resources" tabindex="7" class="nav-link">Resources</a>
+  </nav>
+
+  <main class="container">
+    <section id="welcome" tabindex="-1">
+      <h2>Welcome to Thyroid Talk</h2>
+      <p class="welcome-text">
+        Your go-to place to learn about thyroid health, recognize symptoms early, and find support. Thyroid disorders affect millions worldwide, but understanding them can help you manage your health and thrive every day.
+      </p>
+      <div class="infographic" aria-label="Important thyroid health fact">
+        <blockquote style="font-style: italic; max-width: 600px; margin: auto; color: #2c4a7a;">
+          “Over 20 million Americans have some form of thyroid disease — many don't even know it.”
+          <br /><span style="font-weight: 600; font-size: 0.9rem;">— American Thyroid Association</span>
+        </blockquote>
+      </div>
+    </section>
+
+    <section id="about" tabindex="-1">
+      <h2>About the Thyroid</h2>
+      <p class="section-text">
+        The thyroid is a small butterfly-shaped gland in your neck that produces hormones controlling metabolism, energy, and growth. Proper thyroid function is essential for your overall health.
+      </p>
+    </section>
+
+    <section id="symptoms" tabindex="-1">
+      <h2>Symptoms to Watch For</h2>
+      <div class="symptoms-list">
+        <div class="symptom" tabindex="0">Fatigue &amp; Low Energy</div>
+        <div class="symptom" tabindex="0">Weight Changes</div>
+        <div class="symptom" tabindex="0">Mood Swings or Depression</div>
+        <div class="symptom" tabindex="0">Hair Thinning or Dry Skin</div>
+        <div class="symptom" tabindex="0">Irregular Periods</div>
+        <div class="symptom" tabindex="0">Feeling Cold or Hot</div>
+        <div class="symptom" tabindex="0">Difficulty Concentrating</div>
+        <div class="symptom" tabindex="0">Swelling in the Neck (Goiter)</div>
+      </div>
+    </section>
+
+    <section id="diagnosis" tabindex="-1">
+      <h2>Diagnosis &amp; Treatment</h2>
+      <p class="section-text">
+        Thyroid disorders are diagnosed through blood tests that measure hormone levels and sometimes ultrasounds. Treatments include daily medication, lifestyle changes, and regular doctor visits to monitor your health.
+      </p>
+    </section>
+
+    <section id="myths" tabindex="-1">
+      <h2>Myth vs Fact</h2>
+      <ul class="section-text" style="list-style: disc; padding-left: 20px;">
+        <li>Myth: You can cure thyroid disease with diet alone. <strong>Fact:</strong> Medication is usually necessary to manage thyroid disorders effectively.</li>
+        <li>Myth: Thyroid problems only affect older adults. <strong>Fact:</strong> Teens and young adults can also be affected.</li>
+        <li>Myth: Hypothyroidism always causes weight gain. <strong>Fact:</strong> Symptoms vary and weight loss can also occur.</li>
+      </ul>
+    </section>
+
+    <section id="quiz" tabindex="-1">
+      <h2>Symptom Assessment Quiz</h2>
+      <div class="quiz">
+        <h3>Do you experience any of these symptoms?</h3>
+        <form id="quiz-form">
+          <div class="quiz-question">
+            <p><strong>1. Do you often feel unusually tired or fatigued?</strong></p>
+            <div class="quiz-options">
+              <label><input type="radio" name="fatigue" value="yes"> Yes</label>
+              <label><input type="radio" name="fatigue" value="no"> No</label>
+            </div>
+          </div>
+
+          <div class="quiz-question">
+            <p><strong>2. Have you experienced unexplained weight changes?</strong></p>
+            <div class="quiz-options">
+              <label><input type="radio" name="weight" value="yes"> Yes</label>
+              <label><input type="radio" name="weight" value="no"> No</label>
+            </div>
+          </div>
+
+          <div class="quiz-question">
+            <p><strong>3. Do you have mood swings or feel depressed?</strong></p>
+            <div class="quiz-options">
+              <label><input type="radio" name="mood" value="yes"> Yes</label>
+              <label><input type="radio" name="mood" value="no"> No</label>
+            </div>
+          </div>
+
+          <div class="quiz-question">
+            <p><strong>4. Is your hair thinning or is your skin unusually dry?</strong></p>
+            <div class="quiz-options">
+              <label><input type="radio" name="hair_skin" value="yes"> Yes</label>
+              <label><input type="radio" name="hair_skin" value="no"> No</label>
+            </div>
+          </div>
+
+          <div class="quiz-question">
+            <p><strong>5. Do you have difficulty concentrating or memory issues?</strong></p>
+            <div class="quiz-options">
+              <label><input type="radio" name="concentration" value="yes"> Yes</label>
+              <label><input type="radio" name="concentration" value="no"> No</label>
+            </div>
+          </div>
+        </form>
+
+        <button id="quiz-submit" type="button">Get My Assessment</button>
+        <div id="quiz-result"></div>
+      </div>
+    </section>
+
+    <section id="resources" tabindex="-1">
+      <h2>Additional Resources</h2>
+      <p class="section-text">
+        For more information about thyroid health, consult with healthcare professionals, visit reputable medical websites, and consider joining support groups for people with thyroid conditions.
+      </p>
+    </section>
+  </main>
+
+<script src="script.js"></script>
+</body>
+</html>
